@@ -8,7 +8,7 @@ public class ZippoTest {
 
 
     @Test
-    public void test(){
+    public void test() {
 
         given()     //preparation (token, request body, parameters)
                 .when()         //for URL and request method (get, post, put, delete)
@@ -17,7 +17,7 @@ public class ZippoTest {
     }
 
     @Test
-    public void test1(){
+    public void test1() {
 
         given()
                 .when()
@@ -28,8 +28,8 @@ public class ZippoTest {
                 .statusCode(200);   // checks if the status code is 200
     }
 
-@Test
-    public void contentTypeTest(){
+    @Test
+    public void contentTypeTest() {
 
         given()
                 .when()
@@ -43,13 +43,13 @@ public class ZippoTest {
     }
 
     @Test
-    public void checkCountryFromResponseBody(){
+    public void checkCountryFromResponseBody() {
         given()
                 .when()
                 .get("http://api.zippopotam.us/us/90210")
                 .then()
                 .log().body()
-                .body("country",equalTo("United States"));
+                .body("country", equalTo("United States"));
 
     }
 
@@ -60,20 +60,20 @@ public class ZippoTest {
 
 
     @Test
-    public void checkStateFromResponse(){
+    public void checkStateFromResponse() {
         given()
                 .when()
                 .get("http://api.zippopotam.us/us/90210")
                 .then()
                 .log().body()
                 .statusCode(200)
-                .body("places[0].state",equalTo("California")); // checks if the state is California
+                .body("places[0].state", equalTo("California")); // checks if the state is California
 
 
     }
 
     @Test
-    public void bodyHasItem(){
+    public void bodyHasItem() {
         given()
 
                 .when()
@@ -81,20 +81,94 @@ public class ZippoTest {
                 .then()
                 .log().body()
                 .statusCode(200)
-                .body("places.'place name'",hasItem("Büyükdikili Köyü"));
+                .body("places.'place name'", hasItem("Büyükdikili Köyü"));
     }
 
     @Test
-    public void bodyArraySizeTest(){
+    public void bodyArraySizeTest() {
         given()
                 .when()
                 .get("http://api.zippopotam.us/us/90210")
                 .then()
                 .log().body()
                 .statusCode(200)
-                .body("places",hasSize(1));
+                .body("places", hasSize(1));
+
+    }
+
+    @Test
+    public void bodyArraySizeTest2() {
+        given()
+                .when()
+                .get("http://api.zippopotam.us/tr/01000")
+                .then()
+                .log().body()
+                .statusCode(200)
+                .body("places", hasSize(71));
+
+
+    }
+
+    @Test
+    public void multipleTests() {
+        given()
+                .when()
+                .get("http://api.zippopotam.us/tr/01000")
+                .then()
+                //  .log().body()
+                .statusCode(200)
+                .body("places", hasSize(71))
+                .body("places.state", hasItem("Büyükdikili Köyü"));
 
     }
 
 
+    //  String Country = "us";
+
+    @Test
+    public void pathParamTest() {
+
+        given()
+                .pathParam("Country", "us")
+                .pathParam("ZipCode", "90210")
+                .log().uri() // prints the request url
+                .when()
+                .get("http://api.zippopotam.us/{Country}/{ZipCode}")
+                .then()
+                .log().body()
+                .statusCode(200);
+    }
+
+    @Test
+    public void pathParamTest1() {
+
+        for (int i = 90210; i <= 90213; i++) {
+
+            given()
+                    .pathParam("Country", "us")
+                    .pathParam("ZipCode", i)
+                    .log().uri() // prints the request url
+                    .when()
+                    .get("http://api.zippopotam.us/{Country}/{ZipCode}")
+                    .then()
+                    .log().body()
+                    .statusCode(200)
+                    .body("places", hasSize(1));
+        }
+
+    }
+
+    @Test
+    public void queryParamTest(){
+
+
+
+    }
+
 }
+
+
+
+
+
+
